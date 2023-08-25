@@ -44,8 +44,7 @@ const isValidIBAN = (iban: string): boolean => {
 
 const mod97CheckBBAN = (bban: string): boolean => {
   console.log('bban ', bban)
-  var mod = BigInt(bban) % BigInt(97);
-  console.log(mod)
+  const mod = BigInt(bban) % BigInt(97);
   return mod === BigInt(1)
 }
 
@@ -53,7 +52,7 @@ const mod97CheckBBAN = (bban: string): boolean => {
 const mod97CheckString = (text: string): boolean => {
   let digits = "";
 
-  for (let char of text) {
+  for (const char of text) {
     if (/[0-9]/.test(char)) {
       digits += char;
     } else {

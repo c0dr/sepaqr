@@ -1,4 +1,4 @@
-const generateQrCodeValue = (iban: String, amount: number, recipient: String, usage: String) => {
+const generateQrCodeValue = (iban: string, amount: number, recipient: string, usage: string) => {
 
   if (iban == "" || amount == 0 || recipient == "") {
     return ''
