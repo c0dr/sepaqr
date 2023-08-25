@@ -8,6 +8,12 @@ import ButtonLink from '@/components/links/ButtonLink';
 import UnderlineLink from '@/components/links/UnderlineLink';
 import UnstyledLink from '@/components/links/UnstyledLink';
 
+import { MdAccountBalance } from "react-icons/md";
+import { MdOutlineFlashOn } from "react-icons/md";
+import { MdLockPerson } from "react-icons/md";
+import { IconContext } from "react-icons";
+
+
 /**
  * SVGR Support
  * Caveat: No React Props Type.
@@ -18,13 +24,15 @@ import UnstyledLink from '@/components/links/UnstyledLink';
 import Logo from '~/svg/Logo.svg';
 import Button from '@/components/buttons/Button';
 import { Field, IFormValues } from '@/components/Field';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import QRCode from 'react-qr-code';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import generateQrCodeValue from '@/lib/qr';
 import { isValidIBAN } from '@/lib/iban';
 import { validate } from 'superstruct';
+import { FormContainer, TextFieldElement } from 'react-hook-form-mui'
+
 
 // !STARTERCONF -> Select !STARTERCONF and CMD + SHIFT + F
 // Before you begin editing, follow all comments with `STARTERCONF`,
@@ -47,6 +55,7 @@ export default function HomePage() {
   }, [formState])
 
   const onSubmit: SubmitHandler<IFormValues> = data => {
+    console.log('changed');
     const res = generateQrCodeValue(data.iban, parseFloat(data.amount), data.recipient, data.usage);
     setQrValue(res);
   }
@@ -56,21 +65,31 @@ export default function HomePage() {
       <Head>
         <title>Hi</title>
       </Head>
-      <section className='bg-white'>
+      <section className='bg-white dark:bg-blue-900'>
         <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
-          <Logo className='w-16' />
 
-          <h1 className='mt-4'>QR-Code für Überweisungen erstellen</h1>
+
+          <IconContext.Provider value={{ className: "text-orange-400 dark:text-orange-600", size: "5em" }}>
+            <MdAccountBalance />
+            <MdOutlineFlashOn />
+          </IconContext.Provider>
+
+          <h1 className='mt-4 dark:text-white'>QR-Code für Überweisungen erstellen</h1>
+          <IconContext.Provider value={{ className: "display-inline" }}>
+            <div className='mt-4 text-slate-400 dark:ext-slate-200'>
+              <MdLockPerson className='inline' />Die Daten bleiben 100% privat und werden nicht an den Server gesendet
+            </div>
+          </IconContext.Provider>
 
           <form onChange={handleSubmit(onSubmit)} className='w-3/4 md:w-1/3'>
 
-            <Field label="iban" {...register("iban", { validate: isValidIBAN })} errors={errors} required />
+            <Field fieldName="iban" text='IBAN' {...register("iban", { validate: isValidIBAN })} errors={errors} required />
 
-            <Field label="amount" type="number" min="0.01" step="0.01" {...register("amount")} errors={errors} autoComplete='transaction-amount' required />
+            <Field fieldName="amount" text='Betrag' type="number" min="0.01" step="0.01" {...register("amount")} errors={errors} autoComplete='transaction-amount' required />
 
-            <Field label="recipient" {...register("recipient", { required: true })} errors={errors} autoComplete='name' required />
+            <Field fieldName="recipient" text='Empfänger' {...register("recipient", { required: true })} errors={errors} autoComplete='name' required />
 
-            <Field label="usage" errors={errors} {...register("usage")} />
+            <Field fieldName="usage" text='Verwendungszweck' errors={errors} {...register("usage")} />
 
           </form>
 
