@@ -27,25 +27,19 @@ const Field = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (<div className='mt-4'>
 
-      <label
-        className={"relative block rounded-md border focus-within:ring-1 shadow-sm " + (errors && errors[fieldName] ? "border-red-600 focus-within:border-red-600 focus-within:ring-red-600 " : "border-gray-200 focus-within:border-blue-600 focus-within:ring-blue-600")}
-      >
 
+
+      <div>
         <input
           type={type || "text"}
-          className="peer border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 w-full dark:text-slate-200 autofill:!bg-navy-900"
+          name={fieldName}
           placeholder={text}
           ref={ref}
           {...rest}
-        />
-
-        <span
-          className="pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs dark:bg-inherit dark:text-slate-100"
-        >
-          {text}
-        </span>
-
-      </label>
+          id="first_name" className={
+            "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            + (errors && errors[fieldName] ? "border-red-600 focus-within:border-red-600 focus-within:ring-red-600 " : "border-gray-200 focus-within:border-blue-600 focus-within:ring-blue-600")} />
+      </div>
 
     </div>);
   });
