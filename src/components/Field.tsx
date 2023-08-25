@@ -37,8 +37,8 @@ const Field = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...rest}
           id="first_name" className={
-            "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            + (errors && errors[fieldName] ? "border-red-600 focus-within:border-red-600 focus-within:ring-red-600 " : "border-gray-200 focus-within:border-blue-600 focus-within:ring-blue-600")} />
+            "bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:placeholder-gray-400 dark:text-slate-700 "
+            + (errors && errors[fieldName] ? " border-red-600 focus-within:border-red-600 focus-within:ring-red-600 focus:ring-red-600 focus:border-red-600 bg-red-100" : "border-gray-300 dark:bg-slate-200 dark:border-gray-600  focus-within:border-blue-600 focus-within:ring-blue-600")} />
       </div>
 
     </div>);

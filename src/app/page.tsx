@@ -100,7 +100,7 @@ export default function HomePage() {
 
           </div>
 
-          <footer className='absolute bottom-2 text-gray-700'>
+          <footer className='absolute bottom-2 text-gray-700 dark:text-slate-300'>
             © {new Date().getFullYear()} von{' '}
             <UnderlineLink href='https://mrsimon.dev'>
               Simon
