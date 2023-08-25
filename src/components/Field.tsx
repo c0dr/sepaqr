@@ -18,7 +18,7 @@ type InputProps = React.ComponentPropsWithoutRef<'input'> & {
   register?: UseFormRegister<IFormValues>;
   required?: boolean,
   errors: FieldErrors
-  validate?: Function
+  validate?: (string: string) => boolean
 };
 
 
