@@ -19,7 +19,7 @@ import { SepaQR, SepaQrProps } from '@/components/SEPAQR';
 
 export default function HomePage() {
   const [formData, setFormData] = useState<SepaQrProps>();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(true);
 
   const { register, handleSubmit, watch, formState, formState: { errors } } = useForm<IFormValues>({
     mode: 'onChange',
