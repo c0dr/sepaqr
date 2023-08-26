@@ -1,4 +1,4 @@
-const generateQrCodeValue = (iban: string, amount: number, recipient: string, usage: string) => {
+const generateQrCodeValue = (iban: string, amount: number | undefined, recipient: string, usage: string | undefined) => {
 
   if (iban == "" || amount == 0 || recipient == "") {
     return ''
@@ -20,7 +20,7 @@ const generateQrCodeValue = (iban: string, amount: number, recipient: string, us
     BIC,
     recipient,
     iban,
-    'EUR' + amount.toFixed(2),
+    'EUR' + (amount?.toFixed(2)),
     '',
     '',
     usage || '',
