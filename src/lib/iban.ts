@@ -28,12 +28,10 @@ const isValidIBAN = (iban: string): boolean => {
   if (!mod97CheckIBAN(iban)) {
     return false;
   }
-
   //IBAN is valid, so we need to check BBAN next, if that country supports it
 
 
   if (config.BBANValidation) {
-    console.log(bban)
     return config.BBANValidation(bban[0]);
   } else {
     return true;
@@ -43,7 +41,6 @@ const isValidIBAN = (iban: string): boolean => {
 
 
 const mod97CheckBBAN = (bban: string): boolean => {
-  console.log('bban ', bban)
   const mod = BigInt(bban) % BigInt(97);
   return mod === BigInt(1)
 }
@@ -71,15 +68,18 @@ const mod97CheckIBAN = (iban: string): boolean => {
   return mod97CheckString(iban);
 }
 
+const validateBelgianBBAN = (bban: string): boolean => {
+  const rest = bban.substring(0, 10);
+  const checkDigits = bban.substring(10, 12);
+  const mod = BigInt(rest) % BigInt(97);
 
+  if (mod == BigInt(0)) {
+    return checkDigits == "97"
+  } else {
+    return checkDigits == mod.toString();
+  }
 
-
-//BBAN validation
-
-
-
-
-
+}
 
 const validateIBAN = (iban: string): (string | Error) => {
 
@@ -102,6 +102,7 @@ const COUNTRIES: Record<string, IbanCountry> = {
   BE: {
     length: 16,
     BBANRegex: '[0-9]{12}$',
+    BBANValidation: validateBelgianBBAN,
   },
   BG: {
     length: 16,
@@ -218,19 +219,19 @@ const COUNTRIES: Record<string, IbanCountry> = {
   },
   RO: {
     length: 24,
-    BBANRegex: '[A-Z]{4}[0-9A-Z]{14}$' //incorrect?
+    BBANRegex: '[A-Z]{4}[0-9A-Z]{16}$' //incorrect?
   },
   SE: {
-    length: 20,
+    length: 24,
     BBANRegex: '[0-9]{20}$' //incorrect?
   },
   SI: {
-    length: 15, //incorrect?
+    length: 19, //incorrect?
     BBANRegex: '[0-9]{15}$',
     BBANValidation: mod97CheckBBAN
   },
   SK: {
-    length: 20, //incorrect?
+    length: 24, //incorrect?
     BBANRegex: '[0-9]{20}$'
   },
   SM: {
