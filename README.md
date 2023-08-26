@@ -2,20 +2,14 @@
 <br />
 <div align="center">
   <a href="https://github.com/c0dr/sepaqr">
-    <img src="images/logo.png" alt="Logo">
+    <img src="images/logo.png" width="200" height="150" alt="Logo">
   </a>
-
-<h3 align="center">SEPA QR</h3>
 
   <p align="center">
     Easily generate a QR code for SEPA money transfer. 100% client-side, free.
     <br />
     <br />
-    <a href="https://sepaqr.de">Check it out live</a>
-    ·
-    <a href="https://github.com/c0dr/sepaqr/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/c0dr/sepaqr/issues">Request Feature</a>
+    <a href="https://sepaqr.de">Check it out live</a> 
   </p>
 </div>
 
@@ -50,7 +44,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<img src="images/screenshot.png" alt="Logo">
+<img src="images/screenshot.png" width="500" alt="Logo">
 
 SEPA QR allows easy creation of SEPA QR codes. These QR codes can be read by banking apps to allow money transfers without the need to type long IBANs on your phone.
 The generation is 100% client-side and includes IBAN validation as well.
@@ -62,9 +56,11 @@ The generation is 100% client-side and includes IBAN validation as well.
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Tailwind][Bootstrap.com]][Bootstrap-url]
+* Next
+* Typescript
+* React
+* Tailwind
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
