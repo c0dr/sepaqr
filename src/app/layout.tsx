@@ -3,6 +3,9 @@ import * as React from 'react';
 
 import '@/styles/globals.css';
 
+import { ThemeProvider } from '@/components/ui/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
+
 import { siteConfig } from '@/constant/config';
 
 export const metadata: Metadata = {
@@ -48,8 +51,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html>
-      <body>{children}</body>
+    <html lang='de' suppressHydrationWarning>
+      <body className='bg-background min-h-screen font-sans antialiased'>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

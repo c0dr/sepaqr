@@ -18,6 +18,7 @@ export function openGraph({
     : undefined;
   const ogDesc = encodeURIComponent(description.trim());
 
-  return `https://og.sepaqr.de/api/general?siteName=${ogSiteName}&description=${ogDesc}&logo=${ogLogo}${ogTemplateTitle ? `&templateTitle=${ogTemplateTitle}` : ''
-    }`;
+  return `https://og.sepaqr.de/api/general?siteName=${ogSiteName}&description=${ogDesc}&logo=${ogLogo}${
+    ogTemplateTitle ? `&templateTitle=${ogTemplateTitle}` : ''
+  }`;
 }

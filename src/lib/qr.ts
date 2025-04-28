@@ -1,14 +1,18 @@
-const generateQrCodeValue = (iban: string, amount: number | undefined, recipient: string, usage: string | undefined) => {
-
-  if (iban == "" || amount == 0 || recipient == "") {
-    return ''
+const generateQrCodeValue = (
+  iban: string,
+  amount: number | undefined,
+  recipient: string,
+  usage: string | undefined
+) => {
+  if (iban == '' || amount == 0 || recipient == '') {
+    return '';
   }
 
-  const SERVICE_TAG = "BCD";
-  const VERSION = "002";
-  const CHARACTER_SET = '1'
-  const IDENTIFICATION_CODE = "SCT";
-  const BIC = ""
+  const SERVICE_TAG = 'BCD';
+  const VERSION = '002';
+  const CHARACTER_SET = '1';
+  const IDENTIFICATION_CODE = 'SCT';
+  const BIC = '';
 
   iban = iban.split(' ').join('');
 
@@ -20,13 +24,12 @@ const generateQrCodeValue = (iban: string, amount: number | undefined, recipient
     BIC,
     recipient,
     iban,
-    'EUR' + (amount?.toFixed(2)),
+    'EUR' + amount?.toFixed(2),
     '',
     '',
     usage || '',
-    ''
-  ].join('\n')
-}
-
+    '',
+  ].join('\n');
+};
 
 export default generateQrCodeValue;

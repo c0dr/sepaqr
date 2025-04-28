@@ -13,8 +13,6 @@
   </p>
 </div>
 
-
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -39,9 +37,8 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 <img src="images/screenshot.png" width="500" alt="Logo">
@@ -49,35 +46,34 @@
 SEPA QR allows easy creation of SEPA QR codes. These QR codes can be read by banking apps to allow money transfers without the need to type long IBANs on your phone.
 The generation is 100% client-side and includes IBAN validation as well.
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 ### Built With
 
-* Next
-* Typescript
-* React
-* Tailwind
-
+- Next
+- Typescript
+- React
+- Tailwind
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 To use it locally, clone this repository.
+
 ### Installation
 
-Then install 
-  ```sh
-  npm install
-  npm run dev
-  ```
+Then install
+
+```sh
+npm install
+npm run dev
+```
+
 <!-- ROADMAP -->
+
 ## Roadmap
 
 - [ ] Complete BBAN validation
@@ -88,12 +84,11 @@ See the [open issues](https://github.com/c0dr/sepaqr/issues) for a full list of 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
-Contributions are  **greatly appreciated**.
+Contributions are **greatly appreciated**.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
@@ -106,18 +101,16 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 Simon - [@der_simon](https://twitter.com/der_simon) - info@simon-schraeder.de
@@ -126,12 +119,10 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
 
-* Wikipedia and contributors for the good documentation of the IBAN structure
+- Wikipedia and contributors for the good documentation of the IBAN structure
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
