@@ -8,6 +8,7 @@ import { IconContext } from 'react-icons';
 import {
   MdAccountBalance,
   MdCameraAlt,
+  MdCreditCard,
   MdEdit,
   MdOutlineFlashOn,
   MdQrCode2,
@@ -616,6 +617,19 @@ export default function HomePage() {
               <p>Füllen Sie das Formular aus, um einen QR-Code zu generieren</p>
             </div>
           )}
+        </div>
+
+        <div className='m-2 border border-gray-200 p-3'>
+          <span className='text text-xs text-gray-700'>
+            Werbung für meine andere Seite:{' '}
+          </span>
+          <UnderlineLink
+            href='https://cardonly.de'
+            className='flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-gray-900'
+          >
+            <MdCreditCard className='h-5 w-5' />
+            Finde deine passende Kreditkarte oder Bankkonto auf CardOnly.de
+          </UnderlineLink>
         </div>
 
         <footer className='text-muted-foreground text-center text-sm'>
