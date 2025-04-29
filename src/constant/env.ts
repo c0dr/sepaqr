@@ -4,3 +4,6 @@ export const isLocal = process.env.NODE_ENV === 'development';
 export const showLogger = isLocal
   ? true
   : process.env.NEXT_PUBLIC_SHOW_LOGGER === 'true' ?? false;
+
+export const turnstileSiteKey =
+  process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '0x4AAAAAABWQnmDQIhgrA5l0';

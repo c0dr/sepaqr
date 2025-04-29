@@ -34,6 +34,7 @@ import {
 import { Form } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { turnstileSiteKey } from '@/constant/env';
 
 export default function HomePage() {
   const [formData, setFormData] = useState<{
@@ -396,7 +397,7 @@ export default function HomePage() {
               </DialogHeader>
               <div className='flex justify-center'>
                 <Turnstile
-                  siteKey='1x00000000000000000000AA'
+                  siteKey={turnstileSiteKey}
                   onSuccess={handleVerification}
                   options={{
                     theme: 'light',
