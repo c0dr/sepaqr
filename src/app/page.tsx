@@ -10,6 +10,7 @@ import {
   MdCameraAlt,
   MdCreditCard,
   MdEdit,
+  MdInfo,
   MdOutlineFlashOn,
   MdQrCode2,
   MdRestartAlt,
@@ -516,9 +517,18 @@ export default function HomePage() {
                         ein. Die KI wird automatisch IBAN, Betrag und Empfänger
                         extrahieren.
                       </p>
-                      <p className='text-muted-foreground/80 border-muted border-l-2 pl-2 text-xs'>
-                        Hinweis: Die eingegebenen Daten werden zur Analyse an
-                        unsere Server und KI-Dienstleister übermittelt.
+                      <p className='flex items-start gap-2 rounded-md border border-blue-300 bg-blue-50 p-3 text-sm dark:border-blue-700 dark:bg-blue-900/30'>
+                        <MdInfo className='mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400' />
+                        <span>
+                          <strong>Datenschutzhinweis:</strong> Die eingegebenen
+                          Daten werden zur Analyse an unsere Server und
+                          KI-Dienstleister übermittelt. Mehr Informationen in
+                          unserer{' '}
+                          <UnderlineLink href='/privacy'>
+                            Datenschutzerklärung
+                          </UnderlineLink>
+                          .
+                        </span>
                       </p>
                     </div>
                     <div className='pt-2'>
@@ -580,9 +590,18 @@ export default function HomePage() {
                         Die KI wird versuchen, IBAN, Betrag und Empfänger zu
                         erkennen.
                       </p>
-                      <p className='text-muted-foreground/80 border-muted border-l-2 pl-2 text-xs'>
-                        Hinweis: Die hochgeladenen Bilder werden zur Analyse an
-                        unsere Server und KI-Dienstleister übermittelt.
+                      <p className='flex items-start gap-2 rounded-md border border-blue-300 bg-blue-50 p-3 text-sm dark:border-blue-700 dark:bg-blue-900/30'>
+                        <MdInfo className='mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400' />
+                        <span>
+                          <strong>Datenschutzhinweis:</strong> Die hochgeladenen
+                          Bilder werden zur Analyse an unsere Server und
+                          KI-Dienstleister übermittelt. Mehr Informationen in
+                          unserer{' '}
+                          <UnderlineLink href='/privacy'>
+                            Datenschutzerklärung
+                          </UnderlineLink>
+                          .
+                        </span>
                       </p>
                     </div>
 
