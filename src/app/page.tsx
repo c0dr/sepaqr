@@ -98,7 +98,6 @@ export default function HomePage() {
     setTurnstileToken(token);
     setShowVerificationDialog(false);
 
-    // Execute the pending action
     if (pendingAction === 'text' && analysisText) {
       executeTextAnalysis(analysisText, token);
     } else if (pendingAction === 'image' && selectedImage) {
@@ -151,11 +150,10 @@ export default function HomePage() {
       if (data.amount) setValue('amount', data.amount.toString());
       if (data.recipient) setValue('recipient', data.recipient);
       if (data.usage) setValue('usage', data.usage);
-      // Trigger form validation and update
+
       const formValues = form.getValues();
       updateFormData(formValues);
 
-      // Switch back to the manual tab to review the information
       setActiveTab('manual');
 
       toast({
@@ -179,7 +177,6 @@ export default function HomePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Show preview
     setSelectedImage(file);
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -214,13 +211,11 @@ export default function HomePage() {
     try {
       if (!selectedImage) return;
 
-      // Convert to base64
       const reader = new FileReader();
       reader.readAsDataURL(selectedImage);
 
       reader.onloadend = async () => {
         const base64data = reader.result as string;
-        // Remove data:image/jpeg;base64, prefix
         const base64content = base64data.split(',')[1];
 
         const response = await fetch('/api/analyze', {
@@ -242,11 +237,9 @@ export default function HomePage() {
         if (data.amount) setValue('amount', data.amount.toString());
         if (data.recipient) setValue('recipient', data.recipient);
 
-        // Trigger form validation and update
         const formValues = form.getValues();
         updateFormData(formValues);
 
-        // Switch back to the manual tab to review the information
         setActiveTab('manual');
 
         toast({
@@ -276,12 +269,10 @@ export default function HomePage() {
 
   const [analysisText, setAnalysisText] = useState('');
 
-  // Rate limiting state and constants
   const DAILY_LIMIT = 10;
   const STORAGE_KEY = 'analysis_requests';
   const [, setRemainingRequests] = useState(DAILY_LIMIT);
 
-  // Initialize and check rate limiting on component mount
   useEffect(() => {
     const checkRateLimit = () => {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -366,21 +357,34 @@ export default function HomePage() {
 
   return (
     <main className='bg-background min-h-screen'>
-      <div className='absolute right-4 top-4'>
-        <ThemeToggle />
-      </div>
-      <div className='container flex min-h-screen flex-col items-center justify-center space-y-8 py-12'>
-        <div className='flex flex-col items-center space-y-4'>
-          <IconContext.Provider
-            value={{ className: 'text-primary dark:text-primary', size: '4em' }}
-          >
-            <div className='flex gap-2'>
+      {/* Header with gradient background */}
+      <header className='from-primary/10 via-primary/5 to-background border-b bg-gradient-to-r'>
+        <div className='container flex h-16 items-center justify-between px-4'>
+          <div className='flex items-center gap-2'>
+            <IconContext.Provider
+              value={{ className: 'text-primary', size: '1.5em' }}
+            >
               <MdAccountBalance />
+            </IconContext.Provider>
+            <span className='font-semibold'>SEPA QR</span>
+          </div>
+          <ThemeToggle />
+        </div>
+      </header>
+
+      <div className='container flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center space-y-8 py-12'>
+        {/* Hero section with gradient */}
+        <div className='relative flex flex-col items-center space-y-4 text-center'>
+          <div className='from-primary/5 absolute inset-0 -z-10 rounded-3xl bg-gradient-to-b to-transparent'></div>
+          <IconContext.Provider
+            value={{ className: 'text-primary', size: '4em' }}
+          >
+            <div className='animate-in fade-in flex gap-2 duration-700'>
               <MdOutlineFlashOn />
             </div>
           </IconContext.Provider>
 
-          <h1 className='text-foreground text-center text-3xl font-bold tracking-tight sm:text-4xl'>
+          <h1 className='text-foreground animate-in slide-in-from-bottom-4 text-4xl font-bold tracking-tight duration-700'>
             QR-Code für Überweisungen erstellen
           </h1>
         </div>
@@ -409,30 +413,30 @@ export default function HomePage() {
             </DialogContent>
           </Dialog>
 
-          <div className='bg-card text-card-foreground rounded-lg border p-6 shadow-lg'>
+          <div className='bg-card rounded-xl border p-6 shadow-lg transition-all duration-200 hover:shadow-xl'>
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
               className='w-full'
             >
-              <TabsList className='mb-8 grid h-16 w-full grid-cols-3'>
+              <TabsList className='mb-8 grid h-16 w-full grid-cols-3 gap-4 p-1'>
                 <TabsTrigger
                   value='manual'
-                  className='flex items-center justify-center gap-2 py-3 text-base'
+                  className='data-[state=active]:bg-primary/10 data-[state=active]:text-primary flex items-center justify-center gap-2 py-3 text-base transition-all duration-200'
                 >
                   <MdEdit className='h-5 w-5' />
                   Manuell eingeben
                 </TabsTrigger>
                 <TabsTrigger
                   value='ai'
-                  className='flex items-center justify-center gap-2 py-3 text-base'
+                  className='data-[state=active]:bg-primary/10 data-[state=active]:text-primary flex items-center justify-center gap-2 py-3 text-base transition-all duration-200'
                 >
                   <MdTextFields className='h-5 w-5' />
                   Text analysieren
                 </TabsTrigger>
                 <TabsTrigger
                   value='image'
-                  className='flex items-center justify-center gap-2 py-3 text-base'
+                  className='data-[state=active]:bg-primary/10 data-[state=active]:text-primary flex items-center justify-center gap-2 py-3 text-base transition-all duration-200'
                 >
                   <MdCameraAlt className='h-5 w-5' />
                   Bild hochladen
@@ -440,7 +444,10 @@ export default function HomePage() {
               </TabsList>
 
               <div className='min-h-[320px]'>
-                <TabsContent value='manual' className='mt-0'>
+                <TabsContent
+                  value='manual'
+                  className='animate-in fade-in-50 mt-0 space-y-6 duration-200'
+                >
                   <Form {...form}>
                     <form
                       onChange={form.handleSubmit(updateFormData)}
@@ -453,6 +460,7 @@ export default function HomePage() {
                         errors={errors}
                         autoComplete='iban'
                         required
+                        className='transition-all duration-150 focus-within:scale-[1.02]'
                       />
 
                       <Field
@@ -465,6 +473,7 @@ export default function HomePage() {
                         errors={errors}
                         autoComplete='transaction-amount'
                         required
+                        className='transition-all duration-150 focus-within:scale-[1.02]'
                       />
 
                       <Field
@@ -474,6 +483,7 @@ export default function HomePage() {
                         errors={errors}
                         autoComplete='name'
                         required
+                        className='transition-all duration-150 focus-within:scale-[1.02]'
                       />
 
                       <Field
@@ -481,6 +491,7 @@ export default function HomePage() {
                         text='Verwendungszweck'
                         errors={errors}
                         {...register('usage')}
+                        className='transition-all duration-150 focus-within:scale-[1.02]'
                       />
 
                       <div className='mt-4 flex justify-end'>
@@ -488,7 +499,7 @@ export default function HomePage() {
                           type='button'
                           variant='outline'
                           onClick={handleReset}
-                          className='flex items-center gap-2'
+                          className='flex items-center gap-2 transition-all hover:scale-105'
                         >
                           <MdRestartAlt className='text-lg' />
                           Zurücksetzen
@@ -498,7 +509,10 @@ export default function HomePage() {
                   </Form>
                 </TabsContent>
 
-                <TabsContent value='ai' className='mt-0 space-y-4'>
+                <TabsContent
+                  value='ai'
+                  className='animate-in fade-in-50 mt-0 space-y-4 duration-200'
+                >
                   <div className='space-y-2'>
                     <Label htmlFor='text-input'>
                       Zahlungsdetails als Text eingeben
@@ -506,7 +520,7 @@ export default function HomePage() {
                     <textarea
                       id='text-input'
                       placeholder="z.B. 'Überweise 50 EUR an Max Mustermann, IBAN: DE89370400440532013000'"
-                      className='border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[100px] w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                      className='bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-lg border px-3 py-2 text-sm transition-all duration-150 focus-within:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
                       maxLength={500}
                       value={analysisText}
                       onChange={(e) => setAnalysisText(e.target.value)}
@@ -517,7 +531,7 @@ export default function HomePage() {
                         ein. Die KI wird automatisch IBAN, Betrag und Empfänger
                         extrahieren.
                       </p>
-                      <p className='flex items-start gap-2 rounded-md border border-blue-300 bg-blue-50 p-3 text-sm dark:border-blue-700 dark:bg-blue-900/30'>
+                      <p className='flex items-start gap-2 rounded-lg border border-blue-300 bg-blue-50 p-3 text-sm dark:border-blue-700 dark:bg-blue-900/30'>
                         <MdInfo className='mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400' />
                         <span>
                           <strong>Datenschutzhinweis:</strong> Die eingegebenen
@@ -535,22 +549,50 @@ export default function HomePage() {
                       <Button
                         onClick={() => handleAnalyzeText(analysisText)}
                         disabled={!analysisText || isAnalyzing}
-                        className='w-full'
+                        className='w-full transition-all hover:scale-105'
                       >
-                        {isAnalyzing ? 'Analysiere...' : 'Text analysieren'}
+                        {isAnalyzing ? (
+                          <span className='inline-flex items-center gap-2'>
+                            <svg
+                              className='h-4 w-4 animate-spin'
+                              viewBox='0 0 24 24'
+                            >
+                              <circle
+                                className='opacity-25'
+                                cx='12'
+                                cy='12'
+                                r='10'
+                                stroke='currentColor'
+                                strokeWidth='4'
+                                fill='none'
+                              />
+                              <path
+                                className='opacity-75'
+                                fill='currentColor'
+                                d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                              />
+                            </svg>
+                            Analysiere...
+                          </span>
+                        ) : (
+                          'Text analysieren'
+                        )}
                       </Button>
                     </div>
                   </div>
                 </TabsContent>
 
-                <TabsContent value='image' className='mt-0 space-y-4'>
+                <TabsContent
+                  value='image'
+                  className='animate-in fade-in-50 mt-0 space-y-4 duration-200'
+                >
                   <div className='space-y-2'>
                     <Label htmlFor='image-input'>
                       Foto einer Rechnung oder Überweisung hochladen
                     </Label>
 
                     {!imagePreview ? (
-                      <div className='border-input relative flex flex-col items-center justify-center rounded-md border-2 border-dashed p-6'>
+                      <div className='hover:border-primary/50 relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition-all duration-200'>
                         <MdCameraAlt className='text-muted-foreground mb-2 h-8 w-8' />
                         <p className='text-muted-foreground mb-2 text-sm'>
                           Klicken Sie hier, um ein Bild hochzuladen
@@ -571,13 +613,13 @@ export default function HomePage() {
                         <img
                           src={imagePreview}
                           alt='Vorschau'
-                          className='h-auto max-h-[200px] w-full rounded-md object-cover'
+                          className='h-auto max-h-[200px] w-full rounded-lg object-cover'
                         />
                         <Button
                           onClick={resetImageUpload}
                           variant='destructive'
                           size='sm'
-                          className='absolute right-2 top-2'
+                          className='absolute right-2 top-2 transition-all hover:scale-110'
                         >
                           <MdRestartAlt className='h-4 w-4' />
                         </Button>
@@ -590,7 +632,7 @@ export default function HomePage() {
                         Die KI wird versuchen, IBAN, Betrag und Empfänger zu
                         erkennen.
                       </p>
-                      <p className='flex items-start gap-2 rounded-md border border-blue-300 bg-blue-50 p-3 text-sm dark:border-blue-700 dark:bg-blue-900/30'>
+                      <p className='flex items-start gap-2 rounded-lg border border-blue-300 bg-blue-50 p-3 text-sm dark:border-blue-700 dark:bg-blue-900/30'>
                         <MdInfo className='mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400' />
                         <span>
                           <strong>Datenschutzhinweis:</strong> Die hochgeladenen
@@ -609,11 +651,34 @@ export default function HomePage() {
                       <Button
                         onClick={handleAnalyzeImage}
                         disabled={!selectedImage || isAnalyzing}
-                        className='w-full'
+                        className='w-full transition-all hover:scale-105'
                       >
-                        {isAnalyzing
-                          ? 'Analysiere Bild...'
-                          : 'Bild analysieren'}
+                        {isAnalyzing ? (
+                          <span className='inline-flex items-center gap-2'>
+                            <svg
+                              className='h-4 w-4 animate-spin'
+                              viewBox='0 0 24 24'
+                            >
+                              <circle
+                                className='opacity-25'
+                                cx='12'
+                                cy='12'
+                                r='10'
+                                stroke='currentColor'
+                                strokeWidth='4'
+                                fill='none'
+                              />
+                              <path
+                                className='opacity-75'
+                                fill='currentColor'
+                                d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                              />
+                            </svg>
+                            Analysiere Bild...
+                          </span>
+                        ) : (
+                          'Bild analysieren'
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -623,30 +688,32 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className='flex min-h-[256px] items-center justify-center rounded-lg p-6'>
+        <div className='bg-card flex min-h-[256px] w-full max-w-2xl items-center justify-center rounded-xl p-8 transition-all duration-300'>
           {!error && (
-            <SepaQR
-              iban={formData?.iban}
-              recipient={formData?.recipient}
-              amount={formData?.amount}
-              usage={formData?.usage}
-            />
+            <div className='animate-in fade-in-0 zoom-in-95 duration-300'>
+              <SepaQR
+                iban={formData?.iban}
+                recipient={formData?.recipient}
+                amount={formData?.amount}
+                usage={formData?.usage}
+              />
+            </div>
           )}
           {error && (
             <div className='text-muted-foreground flex flex-col items-center gap-2'>
-              <MdQrCode2 size={48} />
+              <MdQrCode2 size={48} className='animate-pulse' />
               <p>Füllen Sie das Formular aus, um einen QR-Code zu generieren</p>
             </div>
           )}
         </div>
 
-        <div className='advertising-box m-2 border border-gray-200 p-3'>
-          <span className='text text-xs text-gray-700'>
+        <div className='bg-card/50 rounded-lg border p-4 backdrop-blur-sm'>
+          <span className='text-muted-foreground text-xs'>
             Werbung für meine andere Seite:{' '}
           </span>
           <UnderlineLink
             href='https://cardonly.de'
-            className='flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-gray-900'
+            className='text-muted-foreground hover:text-foreground flex items-center justify-center gap-2 text-sm transition-colors'
           >
             <MdCreditCard className='h-5 w-5' />
             Finde deine passende Kreditkarte oder Bankkonto auf CardOnly.de
