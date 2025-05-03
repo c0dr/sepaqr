@@ -1,19 +1,26 @@
 'use client';
 
 import { Turnstile } from '@marsidev/react-turnstile';
+import Image from 'next/image';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { IconContext } from 'react-icons';
 import {
   MdAccountBalance,
+  MdApi,
   MdCameraAlt,
+  MdCode,
+  MdContentCopy,
   MdCreditCard,
   MdEdit,
+  MdEmail,
   MdInfo,
   MdOutlineFlashOn,
+  MdPrivacyTip,
   MdQrCode2,
   MdRestartAlt,
+  MdShare,
   MdTextFields,
 } from 'react-icons/md';
 
@@ -37,14 +44,122 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { turnstileSiteKey } from '@/constant/env';
-
 export default function HomePage() {
+  const urlParamsProcessed = React.useRef(false);
   const [formData, setFormData] = useState<{
     iban?: string;
     amount?: number;
     recipient?: string;
     usage?: string;
   }>();
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [downloadFormat, setDownloadFormat] = useState<'png' | 'svg'>('png');
+  const qrCodeRef = React.useRef<HTMLDivElement>(null);
+
+  const generateShareableUrl = () => {
+    if (typeof window === 'undefined') return '';
+
+    const params = new URLSearchParams();
+    if (formData?.iban) params.append('iban', formData.iban);
+    if (formData?.amount) params.append('amount', formData.amount.toString());
+    if (formData?.recipient) params.append('recipient', formData.recipient);
+    if (formData?.usage) params.append('usage', formData.usage);
+    return `${window.location.origin}${
+      window.location.pathname
+    }?${params.toString()}`;
+  };
+
+  const downloadQrCode = async () => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      if (!qrCodeRef.current) {
+        throw new Error('QR Code container not found');
+      }
+
+      const svg = qrCodeRef.current.querySelector('svg');
+      if (!svg) {
+        throw new Error('SVG element not found');
+      }
+
+      if (downloadFormat === 'svg') {
+        // Download as SVG
+        const svgString = `
+          <svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="white"/>
+            ${svg.innerHTML}
+          </svg>
+        `;
+
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.download = 'sepa-qr.svg';
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else {
+        // Download as PNG
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx) {
+          throw new Error('Could not get canvas context');
+        }
+
+        // Fill white background
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Convert SVG to image
+        const svgString = new XMLSerializer().serializeToString(svg);
+        const img = new window.Image();
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+
+        await new Promise((resolve, reject) => {
+          img.onload = () => {
+            ctx.drawImage(img, 0, 0, 400, 400);
+            URL.revokeObjectURL(url);
+            resolve(null);
+          };
+          img.onerror = reject;
+          img.src = url;
+        });
+
+        const pngUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'sepa-qr.png';
+        link.href = pngUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      toast({
+        title: 'QR-Code heruntergeladen',
+        description: `Der QR-Code wurde als ${downloadFormat.toUpperCase()}-Datei gespeichert.`,
+        variant: 'success',
+      });
+    } catch (error) {
+      // Handle download error silently and show toast notification
+      toast({
+        title: 'Fehler beim Download',
+        description: 'Der QR-Code konnte nicht heruntergeladen werden.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const shareToWhatsApp = () => {
+    const url = generateShareableUrl();
+    window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
+  };
   const [error, setError] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('manual');
@@ -75,18 +190,23 @@ export default function HomePage() {
     setValue,
   } = form;
 
+  // Keep error state in sync with form validation
   useEffect(() => {
-    setError(!formState.isValid);
-  }, [formState]);
+    if (formData && Object.keys(formData).length > 0) {
+      setError(false);
+    } else {
+      setError(!formState.isValid);
+    }
+  }, [formState, formData]);
 
-  const updateFormData = (data: IFormValues) => {
+  const updateFormData = useCallback((data: IFormValues) => {
     setFormData({
       iban: data.iban,
       amount: data.amount ? parseFloat(data.amount) : undefined,
       recipient: data.recipient,
       usage: data.usage,
     });
-  };
+  }, []);
 
   const handleReset = () => {
     reset();
@@ -310,6 +430,52 @@ export default function HomePage() {
     checkRateLimit();
   }, []);
 
+  // Handle URL parameters once on mount
+  useEffect(() => {
+    if (typeof window === 'undefined' || urlParamsProcessed.current) {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    let hasValidValues = false;
+
+    // Set and validate values synchronously
+    const ibanParam = params.get('iban');
+    if (params.has('iban') && ibanParam && isValidIBAN(ibanParam)) {
+      setValue('iban', ibanParam);
+      hasValidValues = true;
+    }
+
+    if (params.has('amount')) {
+      const amount = params.get('amount') ?? '';
+      const parsedAmount = parseFloat(amount);
+      if (!isNaN(parsedAmount) && parsedAmount > 0) {
+        setValue('amount', amount);
+        hasValidValues = true;
+      }
+    }
+
+    if (params.has('recipient')) {
+      const recipient = params.get('recipient') ?? '';
+      setValue('recipient', recipient);
+      hasValidValues = true;
+    }
+
+    if (params.has('usage')) {
+      const usage = params.get('usage') ?? '';
+      setValue('usage', usage);
+      hasValidValues = true;
+    }
+
+    // If we have valid values, trigger form submission directly
+    if (hasValidValues) {
+      const data = form.getValues();
+      updateFormData(data);
+    }
+
+    urlParamsProcessed.current = true;
+  }, [setValue, form, updateFormData, setError]);
+
   const updateRateLimit = () => {
     const stored = localStorage.getItem(STORAGE_KEY);
     const today = new Date().toDateString();
@@ -368,7 +534,31 @@ export default function HomePage() {
             </IconContext.Provider>
             <span className='font-semibold'>SEPA QR</span>
           </div>
-          <ThemeToggle />
+          <div className='flex items-center gap-4'>
+            <UnderlineLink href='/api' className='flex items-center gap-1'>
+              <MdApi className='h-4 w-4' />
+              API
+            </UnderlineLink>
+            <UnderlineLink
+              href='https://github.com/c0dr/sepaqr'
+              className='flex items-center gap-1'
+            >
+              <MdCode className='h-4 w-4' />
+              GitHub
+            </UnderlineLink>
+            <UnderlineLink
+              href='https://www.mrsimon.dev/contact'
+              className='flex items-center gap-1'
+            >
+              <MdEmail className='h-4 w-4' />
+              Kontakt
+            </UnderlineLink>
+            <UnderlineLink href='/privacy' className='flex items-center gap-1'>
+              <MdPrivacyTip className='h-4 w-4' />
+              Datenschutz
+            </UnderlineLink>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -494,7 +684,7 @@ export default function HomePage() {
                         className='transition-all duration-150 focus-within:scale-[1.02]'
                       />
 
-                      <div className='mt-4 flex justify-end'>
+                      <div className='mt-4 flex justify-end gap-2'>
                         <Button
                           type='button'
                           variant='outline'
@@ -504,6 +694,106 @@ export default function HomePage() {
                           <MdRestartAlt className='text-lg' />
                           Zurücksetzen
                         </Button>
+                        <Button
+                          type='button'
+                          variant='outline'
+                          onClick={() => setShowShareDialog(true)}
+                          className='flex items-center gap-2 transition-all hover:scale-105'
+                          disabled={error}
+                        >
+                          <MdShare className='text-lg' />
+                          Teilen
+                        </Button>
+
+                        <Dialog
+                          open={showShareDialog}
+                          onOpenChange={setShowShareDialog}
+                        >
+                          <DialogContent className='sm:max-w-[425px]'>
+                            <DialogHeader>
+                              <DialogTitle>Link teilen</DialogTitle>
+                              <DialogDescription>
+                                Teilen Sie den QR-Code als Link oder Bild.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className='space-y-4'>
+                              <div className='mb-4 flex items-center justify-between rounded-lg border p-2'>
+                                <span className='text-muted-foreground text-sm'>
+                                  Format:
+                                </span>
+                                <div className='flex gap-2'>
+                                  <Button
+                                    onClick={() => setDownloadFormat('png')}
+                                    variant={
+                                      downloadFormat === 'png'
+                                        ? 'default'
+                                        : 'outline'
+                                    }
+                                    size='sm'
+                                  >
+                                    PNG
+                                  </Button>
+                                  <Button
+                                    onClick={() => setDownloadFormat('svg')}
+                                    variant={
+                                      downloadFormat === 'svg'
+                                        ? 'default'
+                                        : 'outline'
+                                    }
+                                    size='sm'
+                                  >
+                                    SVG
+                                  </Button>
+                                </div>
+                              </div>
+
+                              <div className='flex gap-2'>
+                                <input
+                                  type='text'
+                                  readOnly
+                                  value={generateShareableUrl()}
+                                  className='flex-1 rounded-md border px-3 py-2 text-sm'
+                                />
+                                <Button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(
+                                      generateShareableUrl()
+                                    );
+                                    toast({
+                                      title: 'Link kopiert!',
+                                      description:
+                                        'Der Link wurde in die Zwischenablage kopiert.',
+                                      variant: 'success',
+                                    });
+                                    setShowShareDialog(false);
+                                  }}
+                                  className='flex items-center gap-2'
+                                >
+                                  <MdContentCopy className='text-lg' />
+                                  Kopieren
+                                </Button>
+                              </div>
+
+                              <div className='flex gap-2'>
+                                <Button
+                                  onClick={downloadQrCode}
+                                  variant='outline'
+                                  className='flex flex-1 items-center justify-center gap-2'
+                                >
+                                  <MdQrCode2 className='text-lg' />
+                                  QR-Code herunterladen
+                                </Button>
+                                <Button
+                                  onClick={shareToWhatsApp}
+                                  variant='outline'
+                                  className='flex items-center gap-2'
+                                >
+                                  Via WhatsApp teilen
+                                </Button>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </form>
                   </Form>
@@ -610,9 +900,11 @@ export default function HomePage() {
                       </div>
                     ) : (
                       <div className='relative'>
-                        <img
+                        <Image
                           src={imagePreview}
                           alt='Vorschau'
+                          width={400}
+                          height={200}
                           className='h-auto max-h-[200px] w-full rounded-lg object-cover'
                         />
                         <Button
@@ -696,6 +988,7 @@ export default function HomePage() {
                 recipient={formData?.recipient}
                 amount={formData?.amount}
                 usage={formData?.usage}
+                containerRef={qrCodeRef}
               />
             </div>
           )}
@@ -721,16 +1014,7 @@ export default function HomePage() {
         </div>
 
         <footer className='text-muted-foreground text-center text-sm'>
-          Made with ❤️ in Stuttgart.{' '}
-          <UnderlineLink href='https://github.com/c0dr/sepaqr'>
-            Open Source on GitHub
-          </UnderlineLink>
-          {' • '}
-          <UnderlineLink href='https://www.mrsimon.dev/contact'>
-            Kontakt
-          </UnderlineLink>
-          {' • '}
-          <UnderlineLink href='/privacy'>Datenschutz</UnderlineLink>.
+          Made with ❤️ in Stuttgart
         </footer>
       </div>
     </main>

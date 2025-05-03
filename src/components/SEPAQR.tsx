@@ -8,9 +8,16 @@ export type SepaQrProps = {
   amount?: number;
   recipient?: string;
   usage?: string;
+  containerRef?: React.RefObject<HTMLDivElement>;
 };
 
-export const SepaQR = ({ amount, iban, recipient, usage }: SepaQrProps) => {
+export const SepaQR = ({
+  amount,
+  iban,
+  recipient,
+  usage,
+  containerRef,
+}: SepaQrProps) => {
   if (!iban || !recipient) {
     return null;
   }
@@ -23,8 +30,11 @@ export const SepaQR = ({ amount, iban, recipient, usage }: SepaQrProps) => {
   const value = generateQrCodeValue(iban, amount, recipient, usage);
 
   return value ? (
-    <div className='flex justify-center p-4'>
-      <QRCode value={value} level='M' />
+    <div
+      ref={containerRef}
+      className='flex justify-center rounded-lg bg-white p-4'
+    >
+      <QRCode value={value} level='M' size={400} />
     </div>
   ) : null;
 };
