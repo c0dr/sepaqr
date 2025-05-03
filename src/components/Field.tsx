@@ -20,7 +20,7 @@ export interface IFormValues {
 
 type InputProps = React.ComponentPropsWithoutRef<'input'> & {
   fieldName: Path<IFormValues>;
-  errors: FieldErrors;
+  errors: FieldErrors<IFormValues>;
   validate?: (string: string) => boolean;
   text: string;
 };
@@ -42,9 +42,7 @@ const Field = React.forwardRef<HTMLInputElement, InputProps>(
         </FormControl>
         {errors[fieldName] && (
           <FormMessage>
-            {typeof errors[fieldName]?.message === 'string'
-              ? errors[fieldName]?.message
-              : 'Invalid input'}
+            {errors[fieldName]?.message?.toString() || 'Invalid input'}
           </FormMessage>
         )}
       </FormItem>
