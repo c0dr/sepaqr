@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { OpenAI } from 'openai';
+import type { ChatCompletionMessageParam } from 'openai/resources';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -57,7 +58,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const messages = [];
+    const messages: ChatCompletionMessageParam[] = [];
 
     // System message is the same for both text and image
     messages.push({
