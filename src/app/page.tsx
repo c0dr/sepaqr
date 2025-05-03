@@ -34,6 +34,7 @@ import {
 import { Form } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { turnstileSiteKey } from '@/constant/env';
 
 export default function HomePage() {
@@ -620,7 +621,7 @@ export default function HomePage() {
           )}
         </div>
 
-        <div className='m-2 border border-gray-200 p-3'>
+        <div className='advertising-box m-2 border border-gray-200 p-3'>
           <span className='text text-xs text-gray-700'>
             Werbung für meine andere Seite:{' '}
           </span>
@@ -638,7 +639,12 @@ export default function HomePage() {
           <UnderlineLink href='https://github.com/c0dr/sepaqr'>
             Open Source on GitHub
           </UnderlineLink>
-          .
+          {' • '}
+          <UnderlineLink href='https://www.mrsimon.dev/contact'>
+            Kontakt
+          </UnderlineLink>
+          {' • '}
+          <UnderlineLink href='/privacy'>Datenschutz</UnderlineLink>.
         </footer>
       </div>
     </main>
